@@ -1,0 +1,62 @@
+﻿@model QuanLyCinema.Models.nguoidung
+@{
+    ViewBag.Title = "Chỉnh sửa thông tin cá nhân";
+}
+
+<h2>Chỉnh sửa thông tin cá nhân</h2>
+<form id="editForm" method="post" action="@Url.Action("PostEdit", "User")" enctype="multipart/form-data">
+    <!--ẩn id -->
+    <input type="hidden" name="id" value="@Model.id" />
+
+    <div class="form-group">
+        <label for="username">Tên tài khoản:</label>
+        <input type="text" id="username" name="username" class="form-control" value="@Model.username" required />
+    </div>
+
+    <div class="form-group">
+        <label for="password">Mật khẩu:</label>
+        <input type="password" id="password" name="password" class="form-control" value="" />
+    </div>
+
+    <div class="form-group">
+        <label for="repassword">Xác nhận mật khẩu:</label>
+        <input type="password" id="repassword" name="repassword" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="email">email:</label>
+        <input type="email" id="email" name="email" class="form-control" value="@Model.email" required />
+    </div>
+    <div class="form-group">
+        <label for="sodienthoai">email:</label>
+        <input type="text" id="sodienthoai" name="sodienthoai" class="form-control" value="@Model.sodienthoai" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+</form>
+
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script>
+    $('#editForm').submit(function (e) {
+        e.preventDefault(); //ngung submit de khong tai lai trang
+        var formData = new FormData(this); //tao form data de gui ca file va text\
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PostEdit", "User")',
+            data: formData, // gui du lieu dang formdata
+            processData: false,//khong xu ly du lieu
+            contentType: false,//dat contenttype la false de gui dang multipart/ form -data
+            success: function (response) {
+                $('#message').html(response.Message);
+                if (response.success) {
+                    alert(response.Message);
+                    window.location.href = '@Url.Action("Index","User")';
+                }
+            },
+            error: function () {
+                $('#message').html("xảy ra lỗi trong quá trình chỉnh sửa thông tin người dùng");
+            }
+        });
+    });
+</script>

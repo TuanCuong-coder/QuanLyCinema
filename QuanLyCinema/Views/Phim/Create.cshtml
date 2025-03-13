@@ -1,0 +1,118 @@
+﻿
+@{
+    ViewBag.Title = "Thêm mới phim";
+}
+
+
+<h2>Thêm mới phim</h2>
+
+<form class="registration-form" action="/Phim/PostCreate" method="POST" enctype="multipart/form-data">
+
+    <label for="tenphim">Tên phim:</label>
+    <input type="text" id="tenphim" name="tenphim" required>
+
+    <label for="theloaiid">Thể loại phim:</label>
+    <select id="theloaiid" name="theloaiid" required>
+        <option value="">Chọn thể loại phim</option>
+        @foreach (var theloai in ViewBag.TheLoai)
+        {
+            <option value="@theloai.id">@theloai.ten</option>
+        }
+    </select>
+
+    <label for="thoigian">Thời gian chiếu:</label>
+    <input type="datetime-local" id="thoigian" name="thoigian" required>
+
+    <label for="giave">Giá vé:</label>
+    <input type="number" id="giave" name="giave" required>
+
+    <label for="mota">Mô tả:</label>
+    <input type="text" id="mota" name="mota" required>
+
+    <label for="hinhanh">Hình ảnh phim:</label>
+    <input type="file" id="hinhanh" name="hinhanh" accept="image/*">
+
+    <button type="submit">Thêm mới</button>
+</form>
+
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script type="text/javascript">
+    $('form').submit(function (e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+
+        $.ajax({
+            url: '/Phim/PostCreate',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                console.log("Phản hồi từ máy chủ:", response);
+                if (response.success) {
+                    alert(response.message);
+                    window.location.href = '/Phim/Index';
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function () {
+                alert('Có lỗi xảy ra khi thêm mới phim');
+            }
+        });
+    });
+</script>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #2C2C2C;
+        color: #E0E0E0; 
+        text-align: center;
+    }
+
+    h2 {
+        color: #4CAF50;
+    }
+
+    .form-container {
+        background: #3A3A3A; 
+        padding: 15px;
+        border-radius: 8px;
+        width: 320px;
+        margin: 20px auto;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    label {
+        display: block;
+        text-align: left;
+        margin: 10px 0 5px;
+        font-weight: bold;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #666;
+        border-radius: 5px;
+        background-color: #222;
+        color: #fff;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 15px;
+        border: none;
+        border-radius: 5px;
+        background-color: #4CAF50;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        button:hover {
+            background-color: #45A049; 
+        }
+
+</style>

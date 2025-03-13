@@ -1,0 +1,161 @@
+﻿@model List<QuanLyCinema.Models.ghe>
+
+@{
+    var movie = ViewBag.PhimList as QuanLyCinema.Models.phim;
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+<div class="movie-details">
+    <div class="movie-info">
+       
+        <img src="@movie.hinhanh" alt="Poster" class="movie-poster" />
+
+        <h3>@movie.tenphim</h3>
+        <p><strong>Thể loại:</strong> @movie.theloai.ten</p>
+        <p><strong>Mô tả:</strong> @movie.mota</p>
+        <p><strong>Giá vé:</strong> @movie.giave.ToString("N0") VNĐ</p>
+        <p><strong>Thời gian chiếu:</strong> @movie.thoigian</p>
+    </div>
+
+    <div class="seat-selection">
+     
+        <h5 style="text-align:center">Màn hình chiếu</h5>
+        <div class="screen-image">
+            <img src="@Url.Content("~/Images/screen.jpg")" alt="Screen Layout" />
+        </div>
+
+        <h4>Chọn ghế:</h4>
+        <div class="seat-grid">
+            @foreach (var seat in Model)
+            {
+                var buttonClass = seat.trangthai == 0
+                    ? "btn-success"
+                    : seat.trangthai == 1
+                        ? "btn-secondary disabled"
+                        : "btn-warning disabled";
+
+                var tooltipText = seat.trangthai == 0
+                    ? "Ghế trống"
+                    : seat.trangthai == 1
+                        ? "Ghế đang được giữ"
+                        : "Ghế đã được đặt";
+
+                <a href="@Url.Action("DatGhe", "Home", new { gheId = seat.id })"
+                   class="btn @buttonClass"
+                   title="@tooltipText">@seat.vitri</a>
+            }
+        </div>
+        <div style="height:25px"></div>
+
+        <h6>Ghi chú:</h6>
+        <ul>
+            <li class="legend-item"><span class="legend-color legend-green"></span> Ghế trống</li>
+            <li class="legend-item"><span class="legend-color legend-gray"></span> Ghế đang giữ</li>
+            <li class="legend-item"><span class="legend-color legend-yellow"></span> Ghế đã đặt</li>
+        </ul>
+    </div>
+</div>
+
+<style>
+    .movie-details {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px;
+    }
+
+    .movie-info {
+        width: 40%;
+    }
+
+    .movie-poster {
+        width: 100%;
+        max-width: 250px;
+        margin-bottom: 20px;
+    }
+
+    .seat-selection {
+        width: 55%;
+    }
+
+    .seat-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .btn {
+        padding: 10px;
+        text-align: center;
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .btn-success {
+        background-color: #008000; 
+        border: 1px solid #006600;
+    }
+
+    .btn-secondary {
+        background-color: #7f7f7f; 
+        border: 1px solid #3b3b3b;
+    }
+
+    .btn-warning {
+        background-color: #d4a017; 
+        color: black;
+        border: 1px solid #b88900;
+    }
+
+    .screen-image img {
+        width: 100%;
+        max-width: 400px;
+        display: block;
+        margin: 0 auto;
+    }
+
+    .alert {
+        padding: 10px;
+        background-color: red;
+        color: white;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+
+    
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 5px;
+    }
+
+    .legend-color {
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        border-radius: 5px;
+    }
+
+    .legend-green {
+        background-color: #008000;
+    }
+  
+    .legend-gray {
+        background-color: #7f7f7f;
+    }
+  
+    .legend-yellow {
+        background-color: #d4a017;
+    }
+   
+</style>
+

@@ -1,0 +1,195 @@
+﻿
+@{
+    ViewBag.Title = "Danh sách thể loại phim";
+}
+
+
+
+<h2>Danh sách thể loại phim</h2>
+<div class="row">
+    <div class="col-6">
+        <p>Chọn số lượng bản ghi:</p>
+        <select class="select-item" id="pageSize">
+            <option value="1">1</option>
+            <option value="2">5</option>
+            <option value="10" selected>10</option>
+        </select>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-9">
+                <input type="text" class="form-control" name="searchQuery" id="searchQuery" placeholder="Nhập tên thể loại phim..." />
+            </div>
+            <div class="col-3">
+                <button class="form-control" id="search">Tìm kiếm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+</div>
+<div>
+    <table class="table" border="1" style="border-collapse: collapse; width: 100%;">
+        <thead>
+            <tr>
+                <th style="border: 1px solid black;">STT</th>
+                <th style="border: 1px solid black;">Tên thể loại</th>
+                <th style="border: 1px solid black;">Tùy chỉnh</th>
+            </tr>
+        </thead>
+        <tbody id="categoriesList">
+        </tbody>
+    </table>
+</div>
+<div id="paginate">
+
+</div>
+
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script type="text/javascript">
+    function Paging(crrPage) {
+        let pageSize = $("#pageSize").val();
+        let searchQuery = $("#searchQuery").val();
+        $.ajax({
+            url: '@Url.Action("Paging","TheLoaiPhim")',
+            type: 'POST',
+            data: { crrPage: crrPage, pageSize: pageSize, searchQuery: searchQuery },
+            datatype: 'json',
+            success: function (response) {
+                let DanhsachDM = response.data;
+                let tbody = $("#categoriesList");
+                tbody.html("");
+                let i = (crrPage - 1) * pageSize + 1;
+                $.each(DanhsachDM, function (index, theloai) {
+                    tbody.append("<tr><td>" + i + "</td>\
+                         <td>"+ theloai.tentheloai + "</td>\
+                        <td><a href=\"/TheLoaiPhim/Edit?id="+ theloai.id + "\">Sửa </a>\
+                    </tr>\
+                    ")
+                    i++;
+                });
+                let str = "";
+                if (crrPage > 1) {
+                    str += "<button onclick=\"Paging(" + (crrPage - 1) + ")\">Previous</button>";
+                }
+                for (let i = 1; i <= response.totalPage; i++) {
+                    if (i == crrPage) {
+                        str += "<button class='active'>" + i + "</button>";
+                    }
+                    else {
+                        str += "<button onclick=\"Paging(" + i + ")\">" + i + "</button>";
+                    }
+                }
+                if (crrPage < response.totalPage) {
+                    str += "<button onclick=\"Paging(" + (crrPage + 1) + ")\">Next</button>";
+                }
+                $('#paginate').html(str);
+            },
+            error: function () {
+                alert('Error paging the loai phim');
+            }
+        });
+    }
+
+
+    $(document).ready(function () {
+        Paging(1);
+
+        $('#pageSize').change(function () {
+            Paging(1);
+        });
+
+        $('#search').click(function () {
+            Paging(1);
+        });
+    });
+
+
+</script>
+
+<style>
+  
+    body {
+        background-color: #2e2e2e; 
+        color: white;
+        font-family: Arial, sans-serif;
+    }
+
+    
+    h2 {
+        color: #28a745;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+   
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #3a3a3a; 
+        color: white;
+        border-radius: 5px;
+        overflow: hidden;
+        text-align: center; 
+    }
+
+        .table th, .table td {
+            border: 1px solid #555;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .table th {
+            background-color: #28a745;
+            color: white;
+        }
+
+    
+    input, select {
+        background-color: #444; 
+        color: white;
+        border: 1px solid #666;
+        padding: 6px;
+        border-radius: 4px;
+        text-align: center;
+    }
+
+        input::placeholder {
+            color: #bbb; 
+        }
+
+    
+    #search {
+        background-color: #28a745; 
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+        #search:hover {
+            background-color: #218838; 
+        }
+
+  
+    #paginate {
+        margin-top: 15px;
+        text-align: center;
+    }
+
+        #paginate button {
+            background-color: #444;
+            color: white;
+            border: 1px solid #666;
+            margin: 3px;
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+
+        #paginate .active {
+            background-color: #28a745;
+            color: white;
+        }
+</style>

@@ -1,0 +1,124 @@
+﻿@model QuanLyCinema.Models.ThongKeViewModel
+@{
+    ViewBag.Title = "Thống Kê";
+}
+
+<style>
+    body {
+        background-color: #212121; 
+        color: #c8e6c9; 
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 10px;
+    }
+
+    .container {
+        background-color: #333;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    h2 {
+        color: #76ff03; 
+        margin-bottom: 10px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #424242; 
+    }
+
+    table th, table td {
+        border: 1px solid #616161; 
+        padding: 6px;
+        text-align: center;
+    }
+
+    table th {
+        background-color: #388e3c;
+    }
+
+    canvas {
+        display: block;
+        margin: 10px auto;
+    }
+    .main-content {
+        padding-top: 80px; 
+    }
+</style>
+
+
+<div class="container">
+    <h2>Thống kê doanh thu</h2>
+    <p>Doanh thu bán vé: @Model.DoanhThuBanVe.ToString("N0") đ</p>
+    <p>Doanh thu bán đồ ăn: @Model.DoanhThuDoAn.ToString("N0") đ</p>
+    <p>Tổng doanh thu: @Model.TongDoanhThu.ToString("N0") đ</p>
+    <canvas id="revenueChart" width="400" height="200"></canvas>
+</div>
+
+<div class="container">
+    <h2>Thống kê số lượng vé đã bán theo phim</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Tên Phim</th>
+                <th>Số Lượng Vé Đã Bán</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.SoLuongVePhims)
+            {
+                <tr>
+                    <td>@item.TenPhim</td>
+                    <td>@item.SoLuongVe</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="container">
+    <h2>Thống kê số lượng đồ ăn đã bán</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Tên Món Ăn</th>
+                <th>Số Lượng Đã Bán</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.SoLuongDoAns)
+            {
+                <tr>
+                    <td>@item.TenDoAn</td>
+                    <td>@item.SoLuong</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('revenueChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Doanh thu vé', 'Doanh thu đồ ăn', 'Tổng doanh thu'],
+            datasets: [{
+                label: 'Doanh thu (VNĐ)',
+                data: [
+                    @Model.DoanhThuBanVe,
+                    @Model.DoanhThuDoAn,
+                    @Model.TongDoanhThu
+                ],
+                backgroundColor: [
+                    'rgba(27, 94, 32, 0.7)',   
+                    'rgba(76, 175, 80, 0.7)',   
+                    'rgba(139, 195, 74, 0.7)'   
+                ]
+            }]
+        }
+    });
+</script>

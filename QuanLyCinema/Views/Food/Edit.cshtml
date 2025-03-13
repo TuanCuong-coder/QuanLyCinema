@@ -1,0 +1,52 @@
+﻿@model QuanLyCinema.Models.doan
+@{
+    ViewBag.Title = "Chỉnh sửa thông tin đồ ăn ";
+}
+
+<h2>Chỉnh sửa thông tin đồ ăn </h2>
+<form id="editForm" method="post" action="@Url.Action("PostEdit", "Food")" enctype="multipart/form-data">
+    <!-- id ẩn -->
+    <input type="hidden" name="id" value="@Model.id" />
+
+    <div class="form-group">
+        <label for="ten">Tên món ăn:</label>
+        <input type="text" id="ten" name="ten" class="form-control" value="@Model.ten" required />
+    </div>
+    <div class="form-group">
+        <label for="gia">Giá:</label>
+        <input type="number" id="gia" name="gia" class="form-control" value="@Model.gia" required />
+    </div>
+
+    <div class="form-group">
+        <label for="hinhanh">Ảnh sản phẩm:</label>
+        <input type="file" id="hinhanh" name="hinhanh" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Cập nhật</button>
+</form>
+
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script>
+    // Xử lý khi người dùng nhấn nút submit form bang ajax
+    $('#editForm').submit(function (e) {
+        e.preventDefault(); // Ngăn việc submit để không tải lại trang
+        var formData = new FormData(this); // Tạo form Data để gửi cả file và text
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PostEdit", "Food")',
+            data: formData, // Gửi dữ liệu dạng FormData
+            processData: false, // Không xử lý dữ liệu
+            contentType: false, // Đặt contentType là false để gửi dạng multipart/form-data
+            success: function (response) {
+                $('#message').html(response.message);
+                if (response.success) {
+                    alert(response.message);
+                    window.location.href = '@Url.Action("Index", "Food")';
+                }
+            },
+            error: function () {
+                $('#message').html("Xảy ra lỗi khi chỉnh sửa thông tin món ăn");
+            }
+        });
+    });
+</script>

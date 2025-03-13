@@ -1,0 +1,57 @@
+﻿@model QuanLyCinema.Models.hoadon
+
+@{
+    ViewBag.Title = "Hóa đơn";
+    var chiTietHoaDon = ViewBag.ChiTietHoaDon as List<QuanLyCinema.Models.chitiethoadon>;
+    var chiTietDoAn = ViewBag.ChiTietDoAn as List<QuanLyCinema.Models.chitietdoan>;
+}
+
+<h3>Hóa đơn</h3>
+<p><strong>Ngày tạo:</strong> @Model.ngaytao.ToString("dd/MM/yyyy HH:mm:ss")</p>
+<p><strong>Trạng thái:</strong> @ViewBag.TrangThai</p>
+<p><strong>Tên phim:</strong> @ViewBag.TenPhim</p>
+<p><strong>Ngày chiếu:</strong> @ViewBag.NgayChieu</p>
+
+
+<h4>Chi tiết ghế:</h4>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Vị trí ghế</th>
+            <th>Giá</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var chiTiet in chiTietHoaDon)
+        {
+            <tr>
+                <td>@chiTiet.ghe.vitri</td>
+                <td>@String.Format("{0:N0}", chiTiet.gia) VND</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h4>Chi tiết món ăn:</h4>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Tên món</th>
+            <th>Số lượng</th>
+            <th>Giá</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var chiTiet in chiTietDoAn)
+        {
+            <tr>
+                <td>@chiTiet.doan.ten</td>
+                <td>@chiTiet.soluong</td>
+                <td>@String.Format("{0:N0}", chiTiet.gia) VND</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h4>Tổng tiền:</h4>
+<p><strong>@String.Format("{0:N0}", ViewBag.TongTien) VND</strong></p>

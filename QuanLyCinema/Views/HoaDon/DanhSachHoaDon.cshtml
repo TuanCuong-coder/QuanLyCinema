@@ -1,0 +1,76 @@
+﻿@model IEnumerable<QuanLyCinema.Models.HoaDonViewModel>
+
+@{
+    ViewBag.Title = "Danh sách hóa đơn";
+}
+
+<h2>Danh sách hóa đơn</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Mã hóa đơn</th>
+            <th>Tên người dùng</th>
+            <th>Ngày tạo</th>
+            <th>Trạng thái</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var hoaDon in Model)
+        {
+            <tr>
+                <td>
+                    <a href="@Url.Action("HienThiHoaDon", "Home", new { id = hoaDon.HoaDonId })">
+                        @hoaDon.HoaDonId
+                    </a>
+                </td>
+                <td>@hoaDon.TenNguoiDung</td>
+                <td>@hoaDon.NgayTao.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@hoaDon.TrangThai</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<style>
+    h2 {
+        color: #4caf50; 
+        text-align: center; 
+    }
+
+    .table-container {
+        display: flex;
+        justify-content: center; 
+    }
+
+    .table {
+        width: 95%;
+        max-width: 1200px; 
+        border: 1px solid white;
+        color: white;
+        background-color: #333; 
+        margin: 20px 0; 
+    }
+
+        .table thead {
+            background-color: #4caf50; 
+            color: whitesmoke; 
+        }
+
+        .table th, .table td {
+            border: 1px solid white;
+            padding: 10px;
+            text-align: center;
+        }
+
+    body {
+        background-color: #222; 
+        color: white;
+    }
+
+    .sidebar {
+        margin-right: 20px;
+    }
+</style>
+
+
+

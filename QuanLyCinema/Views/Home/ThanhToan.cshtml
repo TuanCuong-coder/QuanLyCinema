@@ -1,0 +1,176 @@
+﻿@model QuanLyCinema.Models.ThanhToanViewModel
+
+@{
+    ViewBag.Title = "Xác nhận thanh toán";
+}
+
+<div style="margin-bottom: 15px; font-size: 18px;">
+    ⏳ Thời gian giữ ghế còn lại:
+    <span id="countdown" style="color: red; font-weight: bold;"></span>
+</div>
+
+<h2>Xác nhận thanh toán</h2>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Thông tin ghế</h3>
+    </div>
+    <div class="panel-body">
+        <p><strong>Ghế:</strong> @Model.Ghe.vitri</p>
+        <p><strong>Phim:</strong> @Model.Ghe.phim.tenphim</p>
+        <p><strong>Hình ảnh phim:</strong></p>
+        <img src="@Model.Ghe.phim.hinhanh" alt="@Model.Ghe.phim.tenphim" style="max-width: 200px;" />
+        <p><strong>Thời gian chiếu:</strong> @Model.Ghe.phim.thoigian</p>
+        <p><strong>Giá vé:</strong> @Model.Ghe.phim.giave.ToString("N0") VNĐ</p>
+    </div>
+</div>
+
+@if (Model.DoAnDuocChon != null && Model.DoAnDuocChon.Count > 0)
+{
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Danh sách món ăn đã chọn</h3>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Món ăn</th>
+                        <th>Hình ảnh</th>
+                        <th>Số lượng</th>
+                        <th>Giá</th>
+                        <th>Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.DoAnDuocChon)
+                    {
+                        var doAn = Model.DoAnList.FirstOrDefault(d => d.id == item.Key);
+
+                        if (doAn != null)
+                        {
+                            <tr>
+                                <td>@doAn.ten</td>
+                                <td><img src="@doAn.hinhanh" alt="@doAn.ten" style="max-width: 100px;" /></td>
+                                <td>@item.Value</td>
+                                <td>@doAn.gia.ToString("N0") VNĐ</td>
+                                <td>@(doAn.gia * item.Value) VNĐ</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Tổng tiền</h3>
+    </div>
+    <div class="panel-body">
+        <p><strong>Tổng cộng:</strong> @Model.TongTien.ToString("N0") VNĐ</p>
+    </div>
+</div>
+
+<div class="text-center">
+    <form method="post" action="@Url.Action("XacNhanThanhToan", "Home")">
+        <button type="submit" class="btn btn-success">Xác nhận thanh toán</button>
+    </form>
+
+    <form method="post" action="@Url.Action("HuyThanhToan", "Home")">
+        <input type="hidden" name="gheIds" value="@Model.Ghe.id" />
+        <button type="submit" class="btn btn-danger">Hủy</button>
+    </form>
+</div>
+
+
+<script>
+    var expireTime = new Date('@ViewBag.ExpireTime.ToString("yyyy-MM-ddTHH:mm:ss")').getTime();
+
+    var countdownInterval = setInterval(function () {
+        var now = new Date().getTime();
+        var distance = expireTime - now;
+
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.getElementById("countdown").innerHTML = minutes + " phút " + seconds + " giây";
+
+        if (distance < 0) {
+            clearInterval(countdownInterval);
+            document.getElementById("countdown").innerHTML = "Đã hết thời gian giữ ghế";
+            setTimeout(function () {
+                alert("Hết thời gian giữ ghế. Vui lòng chọn lại.");
+                window.location.href = '@Url.Action("ChiTietPhim", "Home", new { id = Model.Ghe.phimid })';
+            }, 2000);
+        }
+    }, 1000);
+</script>
+
+<style>
+   
+    body {
+        background-color: #1a1a1a;
+        color: white;
+    }
+
+    .panel {
+        background-color: #2c2c2c;
+        border: none;
+        border-radius: 8px;
+    }
+
+    .panel-heading {
+        background-color: #28a745;
+        color: white;
+        font-weight: bold;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+
+   
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        color: white;
+    }
+
+    .table thead th {
+        background-color: #28a745;
+        color: white;
+        text-align: center;
+    }
+
+    .table tbody tr {
+        background-color: #444;
+    }
+
+    .table tbody td {
+        background-color: inherit;
+        color: white;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .table img {
+        border-radius: 4px;
+    }
+
+    
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+ 
+    #countdown {
+        font-weight: bold;
+        color: #ff4444;
+    }
+</style>

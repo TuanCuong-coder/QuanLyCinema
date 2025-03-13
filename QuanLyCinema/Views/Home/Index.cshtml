@@ -1,0 +1,144 @@
+﻿@model List<QuanLyCinema.Models.phim>
+
+<style>
+    .movie-container {
+        padding: 20px;
+    }
+
+    .movie-card {
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .movie-card img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .movie-card:hover {
+            transform: scale(1.05);
+        }
+
+    .movie-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .movie-card:hover .movie-overlay {
+        opacity: 1;
+    }
+
+    .movie-overlay a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 18px;
+        font-weight: bold;
+        padding: 10px 20px;
+        border: 2px solid #fff;
+        border-radius: 5px;
+        transition: background 0.3s ease, color 0.3s ease;
+    }
+
+        .movie-overlay a:hover {
+            background: #28a745; /* Green background */
+            color: #fff; /* White text */
+        }
+
+    .movie-details {
+        background: transparent;
+        padding: 10px;
+        text-align: center;
+    }
+
+        .movie-details h5 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .movie-details p {
+            margin: 5px 0 0;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+    .search-container {
+        display: flex;
+        justify-content: flex-end; 
+        margin-bottom: 20px;
+    }
+
+        .search-container input {
+            width: 250px;
+            padding: 8px;
+            border: 2px solid #28a745;
+            border-radius: 5px 0 0 5px;
+            outline: none;
+        }
+
+        .search-container button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+        }
+
+            .search-container button:hover {
+                background: #1e7e34;
+            }
+
+</style>
+
+<div class="container movie-container">
+    <div class="search-container">
+        <form method="get" action="@Url.Action("TimKiemPhim", "Home")" class="d-flex justify-content-end">
+            <input type="text" name="TuKhoa" placeholder="Nhập tên phim..." class="form-control" />
+            <button type="submit" class="btn btn-success ms-2">Tìm kiếm</button>
+        </form>
+
+    </div>
+
+
+
+
+    @if (TempData["Error"] != null)
+    {
+        <p style="color: red">@TempData["Error"]</p>
+    }
+
+    <div class="row">
+        @foreach (var movie in Model)
+        {
+            <div class="col-md-3 mb-4">
+                <div class="movie-card">
+                    <img src="@movie.hinhanh" alt="@movie.tenphim" />
+                    <div class="movie-overlay">
+                        <a href="@Url.Action("ChiTietPhim", "Home", new { id = movie.id })">Mua vé ngay</a>
+                    </div>
+                </div>
+                <div class="movie-details">
+                    <h5>@movie.tenphim</h5>
+                    <p>Lịch chiếu: @movie.thoigian</p>
+                    <p>Thể loại: @movie.theloai.ten</p>
+                </div>
+            </div>
+        }
+    </div>
+   
+</div>

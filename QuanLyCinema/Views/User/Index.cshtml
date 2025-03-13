@@ -1,0 +1,39 @@
+﻿@model QuanLyCinema.Models.nguoidung
+@{
+    ViewBag.Title = "Thông tin cá nhân";
+}
+
+<h2>Thông tin cá nhân</h2>
+
+<div id="user-info">
+    <!-- hiển thị thông tin người dùng sau khi ajax trả về dữ liệu-->
+</div>
+
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Gọi Ajax để lấy thông tin người dùng
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetUserInfo", "User")', // Action để lấy thông tin người dùng
+            success: function (response) {
+                if (response.success) {
+                    // Hiển thị thông tin người dùng
+                    var userInfo = `
+                        <p><strong>Tên tài khoản:</strong> ${response.username}</p>
+                        <p><strong>Email:</strong> ${response.email}</p>
+                        <p><strong>Số điện thoại:</strong> ${response.sodienthoai}</p>
+                        <a href="/User/Edit/${response.id}" class="btn btn-primary">Chỉnh sửa thông tin</a>
+                    `;
+                    $('#user-info').html(userInfo);
+                } else {
+                    $('#user-info').html('<p>' + response.message + '</p>');
+                }
+            },
+            error: function () {
+                $('#user-info').html('<p>Đã xảy ra lỗi khi tải thông tin người dùng.</p>');
+            }
+        });
+    });
+</script>
+

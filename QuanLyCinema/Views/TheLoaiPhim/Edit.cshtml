@@ -1,0 +1,46 @@
+﻿@model QuanLyCinema.Models.theloai
+@{
+    ViewBag.Title = "Chỉnh sửa thông tin thể loại phim";
+}
+
+<h2>Chỉnh sửa thông tin thể loại phim</h2>
+<form id="editForm" method="post" action="@Url.Action("PostEdit", "TheLoaiPhim")" enctype="multipart/form-data">
+    <!--ẩn id -->
+    <input type="hidden" name="id" value="@Model.id" />
+
+    <div class="form-group">
+        <label for="ten">Tên danh mục:</label>
+        <input type="text" id="ten" name="ten" class="form-control" value="@Model.ten" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+</form>
+
+
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script>
+    //xu ly khi nguoi dung nhan nop form
+    $('#editForm').submit(function (e) {
+        e.preventDefault(); //ngung submit de khong tai lai trang
+        var formData = new FormData(this); //tao form data de gui ca file va text\
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PostEdit", "TheLoaiPhim")',
+            data: formData, // gui du lieu dang formdata
+            processData: false,//khong xu ly du lieu
+            contentType: false,//dat contenttype la false de gui dang multipart/ form -data
+            success: function (response) {
+                $('#message').html(response.Message);
+                if (response.success) {
+                    alert(response.Message);
+                    window.location.href = '@Url.Action("Index","TheLoaiPhim")';
+                }
+            },
+            error: function () {
+                $('#message').html("xảy ra lỗi trong quá trình chỉnh sửa thông tin thể loại phim");
+            }
+        });
+    });
+</script>
+

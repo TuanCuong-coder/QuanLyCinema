@@ -1,0 +1,81 @@
+﻿@model QuanLyCinema.Models.phim
+@{
+    ViewBag.Title = "Chỉnh sửa thông tin phim";
+}
+
+
+<h2>Chỉnh sửa thông tin phim</h2>
+<form id="editForm" method="post" action="@Url.Action("PostEdit", "Phim")" enctype="multipart/form-data">
+    
+    <input type="hidden" name="id" value="@Model.id" />
+
+    <div class="form-group">
+        <label for="tenphim">Tên phim:</label>
+        <input type="text" id="tenphim" name="tenphim" class="form-control" value="@Model.tenphim" required />
+    </div>
+    <div class="form-group">
+        <label for="theloaiid">Thể loại phim:</label>
+        <select id="theloaiid" name="theloaiid" class="form-control" required>
+            <option value="">Chọn thể loại phim</option>
+            @if (ViewBag.TheLoai != null)
+            {
+                foreach (var theloai in (List<QuanLyCinema.Models.theloai>)ViewBag.TheLoai)
+                {
+                    <option value="@theloai.id" @(theloai.id == Model?.theloaiid ? "selected" : "")>
+                        @theloai.ten
+                    </option>
+                }
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="thoigian">Thời gian chiếu:</label>
+        <input type="datetime-local" id="thoigian" name="thoigian" class="form-control"
+               value="@Model.thoigian.ToString("yyyy-MM-ddTHH:mm")" required />
+    </div>
+
+    <div class="form-group">
+        <label for="giave">Giá vé:</label>
+        <input type="number" id="giave" name="giave" class="form-control" value="@Model.giave" required />
+    </div>
+    <div class="form-group">
+        <label for="mota">Mô tả:</label>
+        <textarea id="mota" name="mota" class="form-control" required>@Model.mota</textarea>
+    </div>
+
+
+
+    <div class="form-group">
+        <label for="hinhanh">Hình ảnh phim:</label>
+        <input type="file" id="hinhanh" name="hinhanh" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Cập nhật</button>
+</form>
+
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script>
+    // Xử lý khi người dùng nhấn nút submit form bang ajax
+    $('#editForm').submit(function (e) {
+        e.preventDefault(); // Ngăn việc submit để không tải lại trang
+        var formData = new FormData(this); // Tạo form Data để gửi cả file và text
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PostEdit", "Phim")',
+            data: formData, // Gửi dữ liệu dạng FormData
+            processData: false, // Không xử lý dữ liệu
+            contentType: false, // Đặt contentType là false để gửi dạng multipart/form-data
+            success: function (response) {
+                $('#message').html(response.message);
+                if (response.success) {
+                    alert(response.message);
+                    window.location.href = '@Url.Action("Index", "Phim")';
+                }
+            },
+            error: function () {
+                $('#message').html("Có lỗi xảy ra khi cập nhật thông tin phim");
+            }
+        });
+    });
+</script>

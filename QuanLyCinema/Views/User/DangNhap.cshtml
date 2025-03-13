@@ -1,0 +1,150 @@
+﻿
+@{
+    ViewBag.Title = "Đăng nhập";
+    Layout = "~/Views/Shared/TaiKhoan.cshtml";
+}
+<style>
+   
+    .login-container {
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #1c1c1c; 
+        border: 1px solid #333;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
+        text-align: center;
+        font-family: Arial, sans-serif;
+        color: #e0e0e0;
+    }
+
+        
+        .login-container h2 {
+            margin-bottom: 20px;
+            color: #4caf50; 
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+   
+    .registration-form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+       
+        .registration-form label {
+            font-weight: bold;
+            text-align: left;
+            margin-bottom: 5px;
+            color: #a0a0a0; 
+        }
+
+    
+    .input-field {
+        width: 100%;
+        padding: 10px;
+        background-color: #2b2b2b; 
+        border: 1px solid #444;
+        border-radius: 5px;
+        color: #fff; 
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+        .input-field::placeholder {
+            color: #777; 
+        }
+
+        .input-field:focus {
+            border-color: #4caf50;
+            outline: none;
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.8);
+        }
+
+  
+    .submit-button {
+        padding: 12px;
+        background-color: #4caf50; 
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+        .submit-button:hover {
+            background-color: #388e3c; 
+            transform: scale(1.05);
+        }
+
+    
+    .dangky {
+        margin-top: 15px;
+        color: #ccc;
+    }
+
+        .dangky a {
+            color: #4caf50;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+            .dangky a:hover {
+                color: #66bb6a;
+                text-decoration: underline;
+            }
+
+   
+    .error {
+        color: #f44336; 
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+</style>
+<div class="login-container">
+    <h2>Đăng nhập tài khoản</h2>
+    <form id="formDangNhap" class="registration-form" action="/User/PostDangNhap" method="POST" enctype="multipart/form-data">
+
+        <div>
+            <label for="username">Tên tài khoản</label>
+            <input type="text" id="username" name="username" class="input-field" placeholder="Nhập username..." required />
+        </div>
+        <div>
+            <label for="password">Mật khẩu</label>
+            <input type="password" id="password" name="password" class="input-field" required />
+        </div>
+        <button type="submit" class="submit-button">Đăng Nhập</button>
+    </form>
+    <div class="dangky">
+        <p>Bạn chưa có tài khoản? <a href="@Url.Action("DangKy", "User")">Đăng ký ngay</a></p>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script>
+        $(document).ready(function () {
+            $('#formDangNhap').submit(function (e) {
+                e.preventDefault();
+                var formData = $(this).serialize();
+                $.ajax({
+                    url: '@Url.Action("PostDangNhap", "User")',
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                          if (response.success) {
+                    window.location.href = '@Url.Action("Index", "Home")';
+                         } else {
+                    alert(response.message);
+                            }
+                    },
+                    error: function () {
+                        $('#message').html('<p class="error">Có lỗi xảy ra khi đăng nhập. Vui lòng thử lại.</p>');
+                    }
+                });
+            });
+        });
+</script>

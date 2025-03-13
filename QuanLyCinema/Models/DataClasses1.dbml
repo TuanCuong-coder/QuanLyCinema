@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="QLCinema" Class="DataClasses1DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Table Name="dbo.chitietdoan" Member="chitietdoans">
+    <Type Name="chitietdoan">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="hoadonid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="doandid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="soluong" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="gia" Type="System.Decimal" DbType="Decimal(10,2) NOT NULL" CanBeNull="false" />
+      <Association Name="doan_chitietdoan" Member="doan" ThisKey="doandid" OtherKey="id" Type="doan" IsForeignKey="true" />
+      <Association Name="hoadon_chitietdoan" Member="hoadon" ThisKey="hoadonid" OtherKey="id" Type="hoadon" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.chitiethoadon" Member="chitiethoadons">
+    <Type Name="chitiethoadon">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="hoadonid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="gheid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="gia" Type="System.Decimal" DbType="Decimal(10,2) NOT NULL" CanBeNull="false" />
+      <Association Name="ghe_chitiethoadon" Member="ghe" ThisKey="gheid" OtherKey="id" Type="ghe" IsForeignKey="true" />
+      <Association Name="hoadon_chitiethoadon" Member="hoadon" ThisKey="hoadonid" OtherKey="id" Type="hoadon" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.doan" Member="doans">
+    <Type Name="doan">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ten" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="gia" Type="System.Decimal" DbType="Decimal(10,2) NOT NULL" CanBeNull="false" />
+      <Column Name="hinhanh" Type="System.String" DbType="NVarChar(555)" CanBeNull="true" />
+      <Association Name="doan_chitietdoan" Member="chitietdoans" ThisKey="id" OtherKey="doandid" Type="chitietdoan" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ghe" Member="ghes">
+    <Type Name="ghe">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="phimid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="vitri" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="trangthai" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="hoadonid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="thoigianGiu" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="ghe_chitiethoadon" Member="chitiethoadons" ThisKey="id" OtherKey="gheid" Type="chitiethoadon" />
+      <Association Name="hoadon_ghe" Member="hoadon" ThisKey="hoadonid" OtherKey="id" Type="hoadon" IsForeignKey="true" />
+      <Association Name="phim_ghe" Member="phim" ThisKey="phimid" OtherKey="id" Type="phim" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.hoadon" Member="hoadons">
+    <Type Name="hoadon">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="userid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ngaytao" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="trangthai" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="hoadon_chitietdoan" Member="chitietdoans" ThisKey="id" OtherKey="hoadonid" Type="chitietdoan" />
+      <Association Name="hoadon_chitiethoadon" Member="chitiethoadons" ThisKey="id" OtherKey="hoadonid" Type="chitiethoadon" />
+      <Association Name="hoadon_ghe" Member="ghes" ThisKey="id" OtherKey="hoadonid" Type="ghe" />
+      <Association Name="nguoidung_hoadon" Member="nguoidung" ThisKey="userid" OtherKey="id" Type="nguoidung" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.nguoidung" Member="nguoidungs">
+    <Type Name="nguoidung">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="username" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="password" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="email" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="sodienthoai" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
+      <Association Name="nguoidung_hoadon" Member="hoadons" ThisKey="id" OtherKey="userid" Type="hoadon" />
+    </Type>
+  </Table>
+  <Table Name="dbo.phim" Member="phims">
+    <Type Name="phim">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="tenphim" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="theloaiid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="thoigian" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="giave" Type="System.Decimal" DbType="Decimal(10,2) NOT NULL" CanBeNull="false" />
+      <Column Name="mota" Type="System.String" DbType="Text" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="hinhanh" Type="System.String" DbType="NVarChar(555)" CanBeNull="true" />
+      <Association Name="phim_ghe" Member="ghes" ThisKey="id" OtherKey="phimid" Type="ghe" />
+      <Association Name="theloai_phim" Member="theloai" ThisKey="theloaiid" OtherKey="id" Type="theloai" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.theloai" Member="theloais">
+    <Type Name="theloai">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ten" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Association Name="theloai_phim" Member="phims" ThisKey="id" OtherKey="theloaiid" Type="phim" />
+    </Type>
+  </Table>
+</Database>

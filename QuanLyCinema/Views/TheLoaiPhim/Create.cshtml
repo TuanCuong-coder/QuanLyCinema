@@ -1,0 +1,61 @@
+﻿
+@{
+    ViewBag.Title = "Thêm mới thể loại phim";
+}
+
+<h2>Thêm mới thể loại phim</h2>
+
+
+<form class="" action="/TheLoaiPhim/PostCreate" method="POST" enctype="multipart/form-data">
+
+    <label for="ten">Tên thể loại phim:</label>
+    <input type="text" id="ten" name="ten" required>
+
+    <button type="submit">Thêm mới</button>
+</form>
+
+
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script type="text/javascript">
+    $('form').submit(function (e) {
+        e.preventDefault();
+
+        var formData = new FormData(this);
+
+        $.ajax({
+            url: '/TheLoaiPhim/PostCreate',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response.success) {
+                    alert(response.message);
+                    window.location.href = '/TheLoai/Index';
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function () {
+                alert('Có lỗi xảy ra .');
+            }
+        });
+    });
+</script>
+<style>
+ 
+    button {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 3px 3px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+        button:hover {
+            background-color: #218838; 
+        }
+
+</style>

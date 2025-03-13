@@ -1,0 +1,237 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+    <h2>Danh sách phim</h2>
+    <div class="row">
+        <div class="col-6">
+            <p>Chọn số lượng bản ghi:</p>
+            <select class="select-item" id="pageSize">
+                <option value="1">1</option>
+                <option value="5">5</option>
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+            </select>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-9">
+                    <input type="text" class="form-control" name="searchQuery" id="searchQuery" placeholder="Nhập tên phim" />
+                </div>
+                <div class="col-3">
+                    <button class="form-control" id="search">Tìm kiếm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group"></div>
+    <div>
+        <table class="table" border="1" style="border-collapse: collapse; width: 100%;">
+            <thead>
+                <tr>
+                    <th style="border: 1px solid black;">STT</th>
+                    <th style="border: 1px solid black;">Tên phim</th>
+                    <th style="border: 1px solid black;">Thể loại phim</th>
+                    <th style="border: 1px solid black;">Thời gian chiếu</th>
+                    <th style="border: 1px solid black;">Giá vé</th>
+                    <th style="border: 1px solid black;">Mô tả</th>
+                    <th style="border: 1px solid black;">Hình ảnh</th>
+                    <th style="border: 1px solid black;">Tác vụ</th>
+                </tr>
+            </thead>
+            <tbody id="PhimList">
+            </tbody>
+        </table>
+</div>
+
+<div id="paginate"></div>
+
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script type="text/javascript">
+    function Paging(crrPage) {
+        let pageSize = $("#pageSize").val();
+        let searchQuery = $("#searchQuery").val();
+        $.ajax({
+            url: '@Url.Action("Paging","Phim")',
+            type: 'POST',
+            data: { crrPage: crrPage, pageSize: pageSize, searchQuery: searchQuery },
+            datatype: 'json',
+            success: function (response) {
+                let Danhsachphim = response.data;
+                let tbody = $("#PhimList");
+                tbody.html("");
+                let i = (crrPage - 1) * pageSize + 1;
+                $.each(Danhsachphim, function (index, phim) {
+                    var time = new Date(phim.thoigian);
+                    var formattedTime = time.toLocaleString();
+                    tbody.append("<tr><td>" + i + "</td>\
+                        <td>"+ phim.tenphim + "</td>\
+                        <td>"+ phim.TheLoai + "</td>\
+                       <td>"+ formattedTime +"</td>\
+                       <td>"+ phim.giave +"</td>\
+                        <td>"+ phim.mota + "</td>\
+                        <td><img src='"+ phim.hinhanh + "' style='max-height:80px'></td>\
+                        <td><a href=\"/phim/edit?id="+ phim.id + "\">Sửa </a>\
+                        <a href='/phim/Xoa?id=" + phim.id + "' class='delete-link'>| Xóa</a>\
+                         </td>\
+                    </tr>\
+                    ")
+                    i++;
+                });
+                let str = "";
+                if (crrPage > 1) {
+                    str += "<button onclick=\"Paging(" + (crrPage - 1) + ")\">Previous</button>";
+                }
+                for (let i = 1; i <= response.totalPage; i++) {
+                    if (i == crrPage) {
+                        str += "<button class='active'>" + i + "</button>";
+                    }
+                    else {
+                        str += "<button onclick=\"Paging(" + i + ")\">" + i + "</button>";
+                    }
+                }
+                if (crrPage < response.totalPage) {
+                    str += "<button onclick=\"Paging(" + (crrPage + 1) + ")\">Next</button>";
+                }
+                $('#paginate').html(str);
+            },
+            error: function () {
+                alert('lỗi phân trang phim');
+            }
+        });
+    }
+    // Sự kiện xóa
+    $(document).on('click', '.delete-link', function (e) {
+        e.preventDefault(); 
+        if (confirm("Bạn có chắc chắn muốn xóa phim này?")) {
+            var productId = $(this).attr('href').split('=')[1]; 
+            $.ajax({
+                url: '/Phim/Xoa',
+                type: 'POST',
+                data: { id: productId },
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        Paging(1); 
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('Lỗi khi xóa sản phẩm');
+                }
+            });
+        }
+    });
+
+    $(document).ready(function () {
+        Paging(1); 
+
+      
+        $('#pageSize').change(function () {
+            Paging(1); 
+        });
+
+        $('#search').click(function () {
+            Paging(1); 
+        });
+    });
+
+
+</script>
+
+<style>
+    
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #444;
+        color: #ddd; 
+        padding: 20px;
+    }
+
+   
+    h2 {
+        color: #4CAF50; 
+        text-align: center;
+        font-size: 28px;
+    }
+
+    
+    .table {
+        width: 100%;
+        background-color: #555; 
+        color: #ddd; 
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+        .table th {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 12px;
+        }
+
+        .table td {
+            padding: 10px;
+            border: 1px solid #666; 
+            text-align: center;
+        }
+
+        .table img {
+            border-radius: 5px;
+        }
+
+
+    .form-control {
+        background-color: #fff; 
+        color: #000; 
+        border: 1px solid #888; 
+        padding: 10px;
+        border-radius: 5px;
+        transition: 0.3s;
+    }
+
+        .form-control:focus {
+            border-color: #4CAF50; 
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+        }
+
+   
+    #search {
+        background-color: #4CAF50; 
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: 0.3s;
+    }
+
+        #search:hover {
+            background-color: #45a049;
+        }
+
+  
+    #paginate {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+        #paginate button {
+            margin: 5px;
+            padding: 8px 12px;
+            background-color: #666; 
+            color: white;
+            border-radius: 5px;
+        }
+
+        #paginate .active {
+            background-color: #4CAF50;
+            font-weight: bold;
+        }
+
+</style>
