@@ -5,50 +5,50 @@ USE QLCinema;
 
 --bảng thể loại phim
 CREATE TABLE theloai (
-    id INT IDENTITY(1,1) PRIMARY KEY,         -- Mã thể loại phim
-    ten NVARCHAR(255) NOT NULL                  -- Tên thể loại phim
+    id INT IDENTITY(1,1) PRIMARY KEY,       
+    ten NVARCHAR(255) NOT NULL                 
 );
 
 --bảng người dùng
 CREATE TABLE nguoidung (
-    id INT IDENTITY(1,1) PRIMARY KEY,         -- Mã người dùng
-    username NVARCHAR(255) NOT NULL,             -- Tên người dùng (username)
-    password NVARCHAR(255) NOT NULL,             -- Mật khẩu của người dùng
-    email NVARCHAR(255) NOT NULL,                -- Email người dùng
-    sodienthoai NVARCHAR(20) NOT NULL           -- Số điện thoại người dùng
+    id INT IDENTITY(1,1) PRIMARY KEY,    
+    username NVARCHAR(255) NOT NULL,           
+    password NVARCHAR(255) NOT NULL,             
+    email NVARCHAR(255) NOT NULL,              
+    sodienthoai NVARCHAR(20) NOT NULL          
 );
 
 --bảng hóa đơn
 CREATE TABLE hoadon (
-    id INT IDENTITY(1,1) PRIMARY KEY,         -- Mã hóa đơn
-    userid INT NOT NULL,                       -- Mã người dùng (FK từ bảng `nguoidung`)
-    ngaytao DATETIME NOT NULL,                 -- Ngày giờ tạo hóa đơn
+    id INT IDENTITY(1,1) PRIMARY KEY,        
+    userid INT NOT NULL,                  
+    ngaytao DATETIME NOT NULL,               
     trangthai INT DEFAULT 0,                   -- Trạng thái hóa đơn (0: Chưa thanh toán, 1: Đã thanh toán)
-    FOREIGN KEY (userid) REFERENCES nguoidung(id)  -- Liên kết với bảng `nguoidung`
+    FOREIGN KEY (userid) REFERENCES nguoidung(id)
 );
 
 --bảng phim
 CREATE TABLE phim (
-    id INT IDENTITY(1,1) PRIMARY KEY,         -- Mã phim
-    tenphim NVARCHAR(255) NOT NULL,              -- Tên phim
-    theloaiid INT NOT NULL,                    -- Mã thể loại phim (FK từ bảng `theloai`)
-    thoigian DATETIME NOT NULL,                -- Thời gian chiếu phim
+    id INT IDENTITY(1,1) PRIMARY KEY,         
+    tenphim NVARCHAR(255) NOT NULL,              
+    theloaiid INT NOT NULL,                    
+    thoigian DATETIME NOT NULL,               
     giave DECIMAL(10, 2) NOT NULL DEFAULT 100000, -- Giá vé của phim
-    mota TEXT,                                -- Mô tả về phim
-    hinhanh NVARCHAR(555),                    -- Hình ảnh phim
-    FOREIGN KEY (theloaiid) REFERENCES theloai(id) -- Liên kết với bảng `theloai`
+    mota TEXT,                                
+    hinhanh NVARCHAR(555),                    
+    FOREIGN KEY (theloaiid) REFERENCES theloai(id) 
 );
 
 -- bảng ghế
 CREATE TABLE ghe (
-    id INT IDENTITY(1,1) PRIMARY KEY,         -- Mã ghế
-    phimid INT NOT NULL,                       -- Mã phim (FK từ bảng `phim`)
-    vitri nvarchar (50) not null,             --vị trí của ghế
+    id INT IDENTITY(1,1) PRIMARY KEY,        
+    phimid INT NOT NULL,                       
+    vitri nvarchar (50) not null,             
     trangthai INT DEFAULT 0,                   -- Trạng thái ghế (0: Trống, 1: Đang giữ, 2: Đã đặt)
-    hoadonid INT NULL,                         -- Mã hóa đơn liên kết với ghế (FK từ bảng `hoadon`)
+    hoadonid INT NULL,                        
 	thoigianGiu datetime ,
-    FOREIGN KEY (phimid) REFERENCES phim(id),  -- Liên kết với bảng `phim`
-    FOREIGN KEY (hoadonid) REFERENCES hoadon(id)  -- Liên kết với bảng `hoadon`
+    FOREIGN KEY (phimid) REFERENCES phim(id), 
+    FOREIGN KEY (hoadonid) REFERENCES hoadon(id) 
 );
 
 -- Trigger thêm ghế tự động khi tạo phim
@@ -92,31 +92,31 @@ GO
 
 --bảng chi tiết hóa đơn
 CREATE TABLE chitiethoadon (
-    id INT IDENTITY(1,1) PRIMARY KEY,         -- Mã chi tiết hóa đơn
-    hoadonid INT NOT NULL,                     -- Mã hóa đơn (FK từ bảng `hoadon`)
-    gheid INT NOT NULL,                        -- Mã ghế (FK từ bảng `ghe`)
-    gia DECIMAL(10, 2) NOT NULL,               -- Giá của ghế tại thời điểm đặt
-    FOREIGN KEY (hoadonid) REFERENCES hoadon(id), -- Liên kết với bảng `hoadon`
-    FOREIGN KEY (gheid) REFERENCES ghe(id)     -- Liên kết với bảng `ghe`
+    id INT IDENTITY(1,1) PRIMARY KEY,         
+    hoadonid INT NOT NULL,                    
+    gheid INT NOT NULL,                        
+    gia DECIMAL(10, 2) NOT NULL,               
+    FOREIGN KEY (hoadonid) REFERENCES hoadon(id), 
+    FOREIGN KEY (gheid) REFERENCES ghe(id)     
 );
 
 --bảng món ăn
 CREATE TABLE doan (
-    id INT IDENTITY(1,1) PRIMARY KEY,         -- Mã món ăn
-    ten NVARCHAR(255) NOT NULL,                  -- Tên món ăn
-    gia DECIMAL(10, 2) NOT NULL,                -- Giá món ăn
-    hinhanh NVARCHAR(555)                       -- Hình ảnh món ăn
+    id INT IDENTITY(1,1) PRIMARY KEY,      
+    ten NVARCHAR(255) NOT NULL,              
+    gia DECIMAL(10, 2) NOT NULL,               
+    hinhanh NVARCHAR(555)                       
 );
 
 --bảng chi tiết món ăn trong hóa đơn
 CREATE TABLE chitietdoan (
-    id INT IDENTITY(1,1) PRIMARY KEY,         -- Mã chi tiết món ăn
-    hoadonid INT NOT NULL,                     -- Mã hóa đơn (FK từ bảng `hoadon`)
-    doandid INT NOT NULL,                      -- Mã món ăn (FK từ bảng `doan`)
-    soluong INT NOT NULL,                      -- Số lượng món ăn
-    gia DECIMAL(10, 2) NOT NULL,               -- Giá của món ăn
-    FOREIGN KEY (hoadonid) REFERENCES hoadon(id), -- Liên kết với bảng `hoadon`
-    FOREIGN KEY (doandid) REFERENCES doan(id)  -- Liên kết với bảng `doan`
+    id INT IDENTITY(1,1) PRIMARY KEY,        
+    hoadonid INT NOT NULL,                 
+    doandid INT NOT NULL,                      
+    soluong INT NOT NULL,                     
+    gia DECIMAL(10, 2) NOT NULL,               
+    FOREIGN KEY (hoadonid) REFERENCES hoadon(id),
+    FOREIGN KEY (doandid) REFERENCES doan(id) 
 );
 
 -- Dữ liệu mẫu
